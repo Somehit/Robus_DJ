@@ -1,4 +1,19 @@
-#include <motor/motor.h>
+/**
+ * ============================================================================
+ *  Robot DJ — Projet de session S1 (Robus)
+ * ============================================================================
+ *  @file    motor.cpp
+ *  @brief   Déplacements de base du robot : avancer, tourner, arrêter.
+ *
+ *  @details Code des fonctions déclarées dans motor.h.
+ *           Code repris du projet précédent (Robus Combattant).
+ *
+ *  @author  Équipe Robot DJ — calibration PID : Francois Mathieu (C6)
+ *  @date    2026-11-13
+ * ============================================================================
+ */
+
+#include <mouvement/motor/motor.h>
 
 MotorSettings currentMotorSettings;
 

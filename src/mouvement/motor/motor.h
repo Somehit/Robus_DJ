@@ -1,3 +1,18 @@
+/**
+ * ============================================================================
+ *  Robot DJ — Projet de session S1 (Robus)
+ * ============================================================================
+ *  @file    motor.h
+ *  @brief   Déplacements de base du robot : avancer, tourner, arrêter.
+ *
+ *  Tâches :
+ *    C6 S'assurer de la calibration du PID du robot
+ *
+ *  @author  Équipe Robot DJ — calibration PID : Francois Mathieu
+ *  @date    2026-11-13
+ * ============================================================================
+ */
+
 #ifndef MOTOR_H
 #define MOTOR_H
 
