@@ -56,28 +56,6 @@ Chaque dossier contient un `.h` (la liste des fonctions, déjà écrite) et un `
 
 ---
 
-## Comment coder ta partie
-
-1. Ouvre le `.h` de ton module. Chaque fonction y est déjà déclarée, avec un commentaire qui dit **ce qu'elle reçoit** (`@param`) et **ce qu'elle doit retourner** (`@return`).
-2. Ouvre le `.cpp` du même dossier. Les variables globales y sont déjà. Écris tes fonctions sous la ligne `// TODO`, en recopiant exactement la signature du `.h` :
-
-   ```cpp
-   // Dans musique.h (déjà écrit) :
-   void ReglerVolume(uint8_t pourcentage);
-
-   // Dans musique.cpp (à écrire) :
-   void ReglerVolume(uint8_t pourcentage)
-   {
-       // ton code ici
-   }
-   ```
-
-3. Compile souvent (`✔ Build`). Une erreur « undefined reference to ... » veut dire qu'une fonction est déclarée dans un `.h` mais pas encore écrite dans le `.cpp`.
-4. Pour tester ta partie seule, appelle tes fonctions dans `setup()` / `loop()` de `main.cpp` **sans committer ce test** : la vraie boucle principale est la tâche J3.
-5. Si tu dois changer une signature (ajouter un paramètre, changer le retour), change-la dans le `.h` **et** préviens ceux qui appellent ta fonction.
-
----
-
 ## Conventions de code
 
 - **Noms en français.** Fonctions en `MajusculeAChaqueMot` (`JouerMusique`), variables en `minusculePuisMajuscules` (`volumeActuel`), constantes en `MAJUSCULES_AVEC_TIRETS_BAS` (`VOLUME_MAX`).
@@ -124,61 +102,6 @@ uint8_t MaFonction(uint8_t numero);
 
 Broches libres : 2, 3, 8 à 11, 13, 38 à 45, 47 à 49, A4 à A13.
 
-### Proposées pour nos composantes — à confirmer
-
-Ces valeurs sont des propositions écrites dans les `.h`. Quand une composante est réellement branchée, corriger le `.h` au besoin **et** l'inscrire dans l'onglet « Pins » du Google Sheets (tâche G1).
-
-| Carte | Broche | Composante | Fichier |
-|---|---|---|---|
-| Robot | 38 | Boule disco | `lumiere-disco.h` |
-| Robot | 39, 40 | Boutons musique précédente / suivante | `ecran-lcd.h` |
-| Robot | 41, 42 | Boutons volume − / + | `ecran-lcd.h` |
-| Robot | A4 | Microphone MAX9814 | `microphone.h` |
-| Robot | I2C 0x40 | Carte PCA9685 (servos des bras, canaux 0 à 3) | `bras-robotique.h` |
-| Télécommande | 3, 4, 5 | Boutons urgence, danse, marche/arrêt | `telecommande.h` |
-| Télécommande | 6, 7 | DEL rouge, DEL verte | `telecommande.h` |
-| Télécommande | 46 | DEL infrarouge | `telecommande.h` |
-
----
-
-## Matériel et alimentation
-
-Résumé des deux manuels fournis pour le projet : *Manuel d'assemblage et d'utilisation de Robus* (Faculté de génie, automne 2026) et le manuel du chargeur Makita DC10SB. En cas de doute, les manuels ont priorité sur ce résumé.
-
-### Batterie
-
-- Robus utilise une batterie d'outils **Makita lithium-ion 12 V max** (10,8 V nominal, 3 cellules).
-- Le bouton sur la batterie affiche le niveau de charge. **Une seule barre rouge ou plus rien = recharger.**
-- **Si le voyant bleu « Low Bat » s'allume ou que l'avertisseur sonne : débrancher la batterie tout de suite et la recharger.** Une batterie lithium-ion vidée trop bas perd de la capacité et finit par ne plus fonctionner.
-- Ne pas court-circuiter la batterie, ne pas l'exposer à l'eau.
-
-### Chargeur Makita DC10SB
-
-- Utiliser **seulement** ce chargeur, et seulement avec les batteries Makita. Un chargeur sert pour deux robots.
-- Charger à l'intérieur, entre **10 °C et 40 °C**. Ne rien poser sur les évents du chargeur.
-- Après la charge : retirer la batterie et débrancher le chargeur.
-
-| Témoin | Signification |
-|---|---|
-| Vert clignotant | Prêt, aucune batterie en charge |
-| Rouge fixe | Charge en cours, 0 à 80 % |
-| Rouge + vert fixes | Charge en cours, 80 à 100 % |
-| Vert fixe | Charge terminée |
-| Rouge clignotant | Charge retardée : batterie trop chaude ou trop froide |
-| Vert et rouge en alternance | Charge impossible : bornes sales, batterie usée ou endommagée |
-| Jaune clignotant | Problème de refroidissement (ventilateur ou évents bouchés) |
-
-Temps de charge approximatif sur le DC10SB : 22 min (BL1016), 30 min (BL1021B), 60 min (BL1041B).
-
-### Mise sous tension du robot
-
-1. Vérifier que l'interrupteur **S2** de l'Arduino-X est à « OFF ».
-2. Brancher la batterie dans le connecteur rond **« +12VDC » (J2)** de l'Arduino-X.
-3. Mettre S2 à « ON ». Les DEL D3 et D9 de l'Arduino-X s'allument.
-4. La carte d'interface (demi-lune) a son propre interrupteur **S1**.
-
-### Tensions disponibles sur la carte d'interface
-
 | Point de test | Tension attendue | Sert à |
 |---|---|---|
 | TP3 (Vboard) | au moins 12 V, batterie chargée | Alimentation générale |
@@ -186,33 +109,3 @@ Temps de charge approximatif sur le DC10SB : 22 min (BL1016), 30 min (BL1021B), 
 | TP1 (Vservo) | environ 5 V, réglable avec le potentiomètre R3 | Servos branchés sur J6 / J7 |
 
 Les servos des bras ne passent pas par J6 / J7 : ils sont commandés par la carte PCA9685 et alimentés par le convertisseur Buck (tâches G6 et G7). Le bilan de puissance (onglets « Composantes » et « Bilan de puissance ») sert à vérifier que chaque rail fournit assez de courant.
-
-### Amplificateur audio de la carte d'interface
-
-- Amplificateur LM386. Entrée par le connecteur **J3** (GND / IN) ou la prise 3,5 mm **J2**, haut-parleur sur **J15**.
-- Volume matériel : potentiomètre **R22**. Le baisser avant un premier test.
-- Un signal trop fort ne sonne pas plus fort : il sature, se déforme et peut endommager le haut-parleur.
-
-### Si un circuit ne fonctionne pas
-
-1. Comparer les branchements avec le plan (en dessiner un s'il n'existe pas).
-2. Vérifier les alimentations au multimètre.
-3. **Une pièce qui chauffe : débrancher l'alimentation tout de suite**, puis corriger le branchement.
-4. Mesurer le signal de l'entrée vers la sortie pour trouver où il devient mauvais.
-5. Si la DEL +5V s'éteint quand on branche ou appuie sur un bumper, ce bumper est branché à l'envers.
-
----
-
-## Compilation et téléversement
-
-1. Ouvrir le dossier `Robus_DJ/` dans **VS Code** avec l'extension **PlatformIO**.
-2. Compiler avec la coche (`✔ Build`) dans la barre du bas. Les bibliothèques (LibRobus, Adafruit PWM Servo Driver) se téléchargent toutes seules la première fois.
-3. Brancher l'Arduino Mega du robot par USB et téléverser avec la flèche (`➡ Upload`).
-4. Le moniteur série est à **9600 bauds**.
-
----
-
-## Références
-
-- LibRobus (fonctions `MOTOR_`, `AUDIO_`, `DISPLAY_`, `ROBUS_`, `AX_`...) : https://github.com/UdeS-GRO/LibRobUS/wiki
-- *Manuel d'assemblage et d'utilisation de Robus* et manuel du chargeur Makita DC10SB : site de session.
