@@ -60,7 +60,7 @@ void loop() {
             EffacerEcran();
     }
 
-  AfficherVolume(vol);
+  AfficherVolume(vol); 
 
 
 //ControleLCD(liste_chanson_artiste);

@@ -48,6 +48,7 @@ const uint8_t LIGNE_BOUTON = 3;
 const unsigned long DUREE_AFFICHAGE_DEBUT = 2000;
 const unsigned long DUREE_AFFICHAGE_DEFILEMENT = 700;
 const unsigned long DUREE_AFFICHAGE_FIN = 2000;
+const unsigned long DUREE_AFFICHAGE_VOLUME = 1500;
 
 // Boutons de navigation (à confirmer)
 const int BROCHE_BOUTON_PRECEDENT = 30;
@@ -60,6 +61,7 @@ const int BROCHE_BOUTON_VOLUME_PLUS = 42;
 //Définition des mode du lcd
 const int MODE_SELECTION = 0;
 const int MODE_AFFICHAGE = 1;
+const int MODE_VOLUME = 2;
 
 enum BoutonNavigation : uint8_t {
   AUCUN_BOUTON,

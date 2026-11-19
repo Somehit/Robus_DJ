@@ -34,12 +34,20 @@ byte musicnote_up[] = {B00000, B01111, B01001, B01001,
 byte musicnote_dw[] = {B00000, B00000, B01111, B01001,
                        B01001, B11011, B11011, B00000};
 
-byte full[] = {B11111, B11111, B11111, B11111,
-                       B11111, B11111, B11111, B11111};   
+byte CaseVolumeFull[] = {B11111, B11111, B11111, B11111,
+                      B11111, B11111, B11111, B11111};
+
+byte CaseVolumeHalf[] = {B00000, B00000, B00000, B00000,
+                         B11111, B11111, B11111, B11111};
 
 unsigned long precedentMillis = 0; // Pour gérer le temps sans bloquer
-int etatDefilement = 0; // 0 = Pause initiale, 1 = En train de défiler, 2 = Pause de fin
+int etatDefilement =
+    0; // 0 = Pause initiale, 1 = En train de défiler, 2 = Pause de fin
 int indexDefilement = 0; // Position actuelle du défilement
+
+unsigned long MillisVolumePrecedent = 0;
+int VolumeActuelle;
+int VolumePrecedent;
 
 // Fonction utilitaire à appeler dès que vous changez la variable "num"
 void EcranInit() {
@@ -51,13 +59,17 @@ void EcranInit() {
   lcd.begin(16, 2);
   lcd.createChar(0, musicnote_up);
   lcd.createChar(1, musicnote_dw);
-  lcd.createChar(2, full);
+  lcd.createChar(2, CaseVolumeFull);
+  lcd.createChar(3, CaseVolumeHalf);
   lcd.clear();
 
   etatDefilement = 0;
   indexDefilement = 0;
-  precedentMillis = millis(); // Relance le chrono à zéro pour la nouvelle chanson
-}
+  precedentMillis =
+      millis(); // Relance le chrono à zéro pour la nouvelle chanson
+  MillisVolumePrecedent =
+      millis(); // Relance le chrono à zéro pour la nouvelle chanson
+    }
 
 void EffacerEcran() {
 
@@ -69,7 +81,8 @@ void EffacerEcran() {
 
 void ControleLCD(listeLecture listeChansonArtiste[]) {
 
-  static int ModeLCD = 0; // 0 = MODE_SELECTION & 1 = MODE_AFFICHAGE
+  static int ModeLCD = 0; // 0 = MODE_SELECTION  1 = MODE_AFFICHAGE  2 = MODE_VOLUME
+  int ModePrecedent;
   static int num = 0;
   static bool BoutonONS = false;
 
@@ -87,7 +100,8 @@ void ControleLCD(listeLecture listeChansonArtiste[]) {
       num--;
     }
 
-    if (LireBoutonNavigation() == BOUTON_SUIVANT && BoutonONS == false && num < NB_CHANSON_MAX) {
+    if (LireBoutonNavigation() == BOUTON_SUIVANT && BoutonONS == false &&
+        num < NB_CHANSON_MAX) {
       BoutonONS = true;
       EffacerEcran();
       num++;
@@ -113,7 +127,31 @@ void ControleLCD(listeLecture listeChansonArtiste[]) {
       EffacerEcran();
     }
   }
+
+  if (ModeLCD == MODE_VOLUME) {
+
+    unsigned long MillisVolumeActuel = millis();
+
+    if (MillisVolumeActuel - MillisVolumePrecedent < DUREE_AFFICHAGE_VOLUME) {
+      AfficherVolume(50);
+    } else {
+      ModeLCD = ModePrecedent;
+    }
+  }
+
+  // Verif si le volume a changer
+  if (VolumeActuelle != VolumePrecedent) {
+
+    if (ModeLCD != MODE_VOLUME) {
+      ModePrecedent = ModeLCD;
+    }
+    ModeLCD = MODE_VOLUME;
+    MillisVolumePrecedent = millis();
+  }
+
+  VolumePrecedent = VolumeActuelle;
 }
+
 
 void AfficherSelection(listeLecture listeChansonArtiste[], int num) {
 
@@ -249,27 +287,30 @@ void AfficherMusique(listeLecture listeChansonArtiste[], int num) {
   }
 }
 
-void AfficherVolume (int pourcentage){
+void AfficherVolume(int pourcentage) {
 
-  int Volume016 = (16.0/100.0) * pourcentage;
-  //int Volume016 = FVolume016;
-  String l1 = "Volume: " ;//+ pourcentage;
+  EffacerEcran();
 
+  int Volume032 = (32.0 / 100.0) * pourcentage;
+  //int Volume016 = Volume032/2;
+  // int Volume016 = FVolume016;
+  String l1 = "Volume: "; //+ pourcentage;
 
-    lcd.setCursor(0, 0);
-    lcd.print(l1);
-    lcd.print(pourcentage);
-    lcd.write("%");
-
-    lcd.setCursor(0, 1);
-    //lcd.print(Volume016);
-
-    for (int i = 0; i<Volume016; i++){
-        lcd.write(byte(2));
-    }
+  lcd.setCursor(0, 0);
+  lcd.print(l1);
+  lcd.print(pourcentage);
+  lcd.write("%");
 
 
+  lcd.setCursor(0, 1);
+  // lcd.print(Volume016);
 
+  for (int i = 0; i < (Volume032/2); i++) {
+    lcd.write(byte(2));
+  }
+  if (Volume032 % 2 == 1){
+    lcd.write(byte(3));
+  }
 }
 
 BoutonNavigation LireBoutonNavigation() {
@@ -288,74 +329,3 @@ BoutonNavigation LireBoutonNavigation() {
 
   return AUCUN_BOUTON;
 }
-
-/*
-void displaymenu(int num)
-{
-  lcd.clear();
-
-  String L1 = liste_chanson_artiste[num][0];
-  String L2 = liste_chanson_artiste[num][1];
-
-  // Calcul des longueurs
-  int len1 = L1.length();
-  int len2 = L2.length();
-  int lenMax = max(len1, len2);
-
-  lcd.noAutoscroll();
-
-  while (true)
-  {
-    lcd.clear();
-
-    lcd.setCursor(0, 0);
-    lcd.print(L1.substring(0, 16));
-
-    lcd.setCursor(0, 1);
-    lcd.print(L2.substring(0, 16));
-
-    delay(2500); // Pause initiale
-
-    // Défilement (seulement si au moins une ligne dépasse 16)
-    if (lenMax > 16)
-    {
-      // On crée des versions prolongées avec des espaces à la fin pour un
-défilement propre String L1Extended = L1 + "                "; String L2Extended
-= L2 + "                ";
-
-      for (int pos = 1; pos <= (lenMax - 16); pos++)
-      {
-
-        // Défilement Ligne 1
-        lcd.setCursor(0, 0);
-        if (len1 > 16)
-        {
-          // Si elle dépasse, on fait défiler la fenêtre de 16 caractères
-          lcd.print(L1Extended.substring(pos, pos + 16));
-        }
-        else
-        {
-          // Si elle ne dépasse pas, elle reste fixe
-          lcd.print(L1.substring(0, 16));
-        }
-
-        // Défilement Ligne 2
-        lcd.setCursor(0, 1);
-        if (len2 > 16)
-        {
-          // Si elle dépasse, on fait défiler la fenêtre
-          lcd.print(L2Extended.substring(pos, pos + 16));
-        }
-        else
-        {
-          // Si elle ne dépasse pas, elle reste fixe
-          lcd.print(L2.substring(0, 16));
-        }
-
-        delay(800); // Vitesse du défilement
-      }
-    }
-    delay(2000);
-  }
-}
-*/
