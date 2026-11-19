@@ -109,7 +109,7 @@ void AfficherMusique(listeLecture liste_chanson_artiste[], int num);
  * @brief Affiche le volume (E6).
  * @param pourcentage Volume à afficher (0 à 100).
  */
-void AfficherVolume(uint8_t pourcentage);
+void AfficherVolume (int pourcentage);
 
 /**
  * @brief Affiche le bouton appuyé pendant 1 seconde (E7).

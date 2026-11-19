@@ -40,8 +40,29 @@ listeLecture liste_chanson_artiste[64] = {
     {"S&M", "Rihanna"},
     {"S&M", "Rihanna"}};
 
+    int test =1;
+    int vol = 0;
+    bool BoutonONS=false;
+
 void loop() {
 
-ControleLCD(liste_chanson_artiste);
+    if (LireBoutonNavigation() == AUCUN_BOUTON) {
+      BoutonONS = false;
+    }    
+    if (LireBoutonNavigation() == BOUTON_PRECEDENT && BoutonONS == false) {
+      BoutonONS = true;
+      vol = vol - 5;
+      EffacerEcran();
+    }
+    if (LireBoutonNavigation() == BOUTON_SUIVANT && BoutonONS == false) {
+      BoutonONS = true;
+      vol = vol + 5;
+            EffacerEcran();
+    }
+
+  AfficherVolume(vol);
+
+
+//ControleLCD(liste_chanson_artiste);
 
 }

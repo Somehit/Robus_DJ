@@ -34,6 +34,9 @@ byte musicnote_up[] = {B00000, B01111, B01001, B01001,
 byte musicnote_dw[] = {B00000, B00000, B01111, B01001,
                        B01001, B11011, B11011, B00000};
 
+byte full[] = {B11111, B11111, B11111, B11111,
+                       B11111, B11111, B11111, B11111};   
+
 unsigned long precedentMillis = 0; // Pour gérer le temps sans bloquer
 int etatDefilement = 0; // 0 = Pause initiale, 1 = En train de défiler, 2 = Pause de fin
 int indexDefilement = 0; // Position actuelle du défilement
@@ -48,6 +51,7 @@ void EcranInit() {
   lcd.begin(16, 2);
   lcd.createChar(0, musicnote_up);
   lcd.createChar(1, musicnote_dw);
+  lcd.createChar(2, full);
   lcd.clear();
 
   etatDefilement = 0;
@@ -243,6 +247,29 @@ void AfficherMusique(listeLecture listeChansonArtiste[], int num) {
       EffacerEcran();
     }
   }
+}
+
+void AfficherVolume (int pourcentage){
+
+  int Volume016 = (16.0/100.0) * pourcentage;
+  //int Volume016 = FVolume016;
+  String l1 = "Volume: " ;//+ pourcentage;
+
+
+    lcd.setCursor(0, 0);
+    lcd.print(l1);
+    lcd.print(pourcentage);
+    lcd.write("%");
+
+    lcd.setCursor(0, 1);
+    //lcd.print(Volume016);
+
+    for (int i = 0; i<Volume016; i++){
+        lcd.write(byte(2));
+    }
+
+
+
 }
 
 BoutonNavigation LireBoutonNavigation() {
