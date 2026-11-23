@@ -48,7 +48,7 @@ const uint8_t LIGNE_BOUTON = 3;
 const unsigned long DUREE_AFFICHAGE_DEBUT = 2000;
 const unsigned long DUREE_AFFICHAGE_DEFILEMENT = 700;
 const unsigned long DUREE_AFFICHAGE_FIN = 2000;
-const unsigned long DUREE_AFFICHAGE_VOLUME = 1500;
+const unsigned long DUREE_AFFICHAGE_VOLUME = 2000;
 
 // Boutons de navigation (à confirmer)
 const int BROCHE_BOUTON_PRECEDENT = 30;
@@ -91,7 +91,7 @@ void EffacerEcran();
  */
 void AfficherLigne(uint8_t ligne, const char *texte);
 
-void ControleLCD(listeLecture listeChansonArtiste[]);
+void ControleLCD(listeLecture listeChansonArtiste[], int vol);
 
 /**
  * @brief Met le LCD en mode Afficher la selection.

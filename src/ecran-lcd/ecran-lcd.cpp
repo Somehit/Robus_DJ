@@ -46,11 +46,12 @@ int etatDefilement =
 int indexDefilement = 0; // Position actuelle du défilement
 
 unsigned long MillisVolumePrecedent = 0;
-int VolumeActuelle;
-int VolumePrecedent;
+static int ModeLCD; // 0 = MODE_SELECTION  1 = MODE_AFFICHAGE  2 = MODE_VOLUME
+
 
 // Fonction utilitaire à appeler dès que vous changez la variable "num"
 void EcranInit() {
+  ModeLCD = 0;
 
   pinMode(BROCHE_BOUTON_PRECEDENT, INPUT_PULLUP);
   pinMode(BROCHE_BOUTON_SUIVANT, INPUT_PULLUP);
@@ -79,12 +80,26 @@ void EffacerEcran() {
   lcd.setCursor(0, 0);
 }
 
-void ControleLCD(listeLecture listeChansonArtiste[]) {
-
-  static int ModeLCD = 0; // 0 = MODE_SELECTION  1 = MODE_AFFICHAGE  2 = MODE_VOLUME
-  int ModePrecedent;
+void ControleLCD(listeLecture listeChansonArtiste[], int vol) {
+  
+  int VolumeActuelle = vol;
+  static int VolumePrecedent = VolumeActuelle;// = VolumeActuelle;
+  bool VolumeChange = VolumeActuelle > (VolumePrecedent + 1) ||
+                      VolumeActuelle < (VolumePrecedent - 1);
+  
+  static int ModePrecedent = 0;
   static int num = 0;
   static bool BoutonONS = false;
+  
+  // Verif si le volume a changer
+  if (VolumeChange) {
+    if (ModeLCD != MODE_VOLUME) {
+      ModePrecedent = ModeLCD;
+    }
+    
+   MillisVolumePrecedent = millis();
+   ModeLCD = MODE_VOLUME;
+  }
 
   if (ModeLCD == MODE_SELECTION) {
 
@@ -133,23 +148,22 @@ void ControleLCD(listeLecture listeChansonArtiste[]) {
     unsigned long MillisVolumeActuel = millis();
 
     if (MillisVolumeActuel - MillisVolumePrecedent < DUREE_AFFICHAGE_VOLUME) {
-      AfficherVolume(50);
+      
+      if (VolumeChange) {
+        AfficherVolume(vol);
+    }
+      
     } else {
       ModeLCD = ModePrecedent;
     }
   }
 
-  // Verif si le volume a changer
-  if (VolumeActuelle != VolumePrecedent) {
-
-    if (ModeLCD != MODE_VOLUME) {
-      ModePrecedent = ModeLCD;
-    }
-    ModeLCD = MODE_VOLUME;
-    MillisVolumePrecedent = millis();
+  
+  if (VolumeChange) {
+    VolumePrecedent = VolumeActuelle;
   }
-
-  VolumePrecedent = VolumeActuelle;
+  /* Serial.println(vol);
+  Serial.println(ModePrecedent); */
 }
 
 
@@ -329,3 +343,5 @@ BoutonNavigation LireBoutonNavigation() {
 
   return AUCUN_BOUTON;
 }
+
+

@@ -28,6 +28,8 @@
 
 void setup() {
   EcranInit();
+
+ Serial.begin(9600);
 }
 
 
@@ -41,28 +43,34 @@ listeLecture liste_chanson_artiste[64] = {
     {"S&M", "Rihanna"}};
 
     int test =1;
-    int vol = 0;
+    int vol;
     bool BoutonONS=false;
 
 void loop() {
-
+  vol = (analogRead(A7))/10;
+  ControleLCD(liste_chanson_artiste, vol);
+/*
     if (LireBoutonNavigation() == AUCUN_BOUTON) {
       BoutonONS = false;
     }    
     if (LireBoutonNavigation() == BOUTON_PRECEDENT && BoutonONS == false) {
       BoutonONS = true;
-      vol = vol - 5;
+      vol = vol - 2;
       EffacerEcran();
     }
     if (LireBoutonNavigation() == BOUTON_SUIVANT && BoutonONS == false) {
       BoutonONS = true;
-      vol = vol + 5;
+      vol = vol + 2;
             EffacerEcran();
     }
 
   AfficherVolume(vol); 
+  delay(500);
+*/
 
 
 //ControleLCD(liste_chanson_artiste);
 
 }
+
+
