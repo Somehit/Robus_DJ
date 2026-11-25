@@ -17,14 +17,12 @@
 #include <ecran-lcd/ecran-lcd.h>
 
 // --- Variables globales (déclarées « extern » dans le .h) ---
-Bouton boutonPrecedent = {BROCHE_BOUTON_PRECEDENT, LOW, LOW, 0};
+/*Bouton boutonPrecedent = {BROCHE_BOUTON_PRECEDENT, LOW, LOW, 0};
 Bouton boutonSuivant = {BROCHE_BOUTON_SUIVANT, LOW, LOW, 0};
 Bouton boutonVolumeMoins = {BROCHE_BOUTON_VOLUME_MOINS, LOW, LOW, 0};
 Bouton boutonVolumePlus = {BROCHE_BOUTON_VOLUME_PLUS, LOW, LOW, 0};
 
-unsigned long debutAffichageBouton = 0;
-
-// TODO : écrire ici les fonctions déclarées dans ecran-lcd.h
+unsigned long debutAffichageBouton = 0;*/
 
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
@@ -35,19 +33,27 @@ byte musicnote_dw[] = {B00000, B00000, B01111, B01001,
                        B01001, B11011, B11011, B00000};
 
 byte CaseVolumeFull[] = {B11111, B11111, B11111, B11111,
-                      B11111, B11111, B11111, B11111};
+                         B11111, B11111, B11111, B11111};
 
 byte CaseVolumeHalf[] = {B00000, B00000, B00000, B00000,
                          B11111, B11111, B11111, B11111};
+
+byte pausechar[] = {B00000, B00000, B01010, B01010,
+                    B01010, B01010, B01010, B00000};
+
+byte playchar[] = {B00000, B00000, B01000, B01100,
+                   B01110, B01100, B01000, B00000};
 
 unsigned long precedentMillis = 0; // Pour gérer le temps sans bloquer
 int etatDefilement =
     0; // 0 = Pause initiale, 1 = En train de défiler, 2 = Pause de fin
 int indexDefilement = 0; // Position actuelle du défilement
 
-unsigned long MillisVolumePrecedent = 0;
-static int ModeLCD; // 0 = MODE_SELECTION  1 = MODE_AFFICHAGE  2 = MODE_VOLUME
+int volume;
 
+unsigned long MillisVolumePrecedent = 0;
+unsigned long MillisPlayPrecedent = 0;
+int ModeLCD;  //0 = MODE_SELECTION, 1 = MODE_AFFICHAGE, 2 = MODE_VOLUME, 3 = MODE_PAUSE, 4 = MODE_PLAY
 
 // Fonction utilitaire à appeler dès que vous changez la variable "num"
 void EcranInit() {
@@ -58,47 +64,53 @@ void EcranInit() {
   pinMode(BROCHE_BOUTON_SELECTION, INPUT_PULLUP);
 
   lcd.begin(16, 2);
+  lcd.clear();
+
   lcd.createChar(0, musicnote_up);
   lcd.createChar(1, musicnote_dw);
   lcd.createChar(2, CaseVolumeFull);
   lcd.createChar(3, CaseVolumeHalf);
-  lcd.clear();
+  lcd.createChar(4, pausechar);
+  lcd.createChar(5, playchar);
 
   etatDefilement = 0;
   indexDefilement = 0;
+
   precedentMillis =
       millis(); // Relance le chrono à zéro pour la nouvelle chanson
   MillisVolumePrecedent =
       millis(); // Relance le chrono à zéro pour la nouvelle chanson
-    }
+  MillisPlayPrecedent =
+      millis(); // Relance le chrono à zéro pour la nouvelle chanson
+}
 
 void EffacerEcran() {
 
   lcd.clear();
   etatDefilement = 0;
-  indexDefilement = 0;
+  //indexDefilement = 0;
   lcd.setCursor(0, 0);
 }
 
-void ControleLCD(listeLecture listeChansonArtiste[], int vol) {
-  
-  int VolumeActuelle = vol;
-  static int VolumePrecedent = VolumeActuelle;// = VolumeActuelle;
+void ControleLCD(listeLecture listeChansonArtiste[]) {
+
+  int VolumeActuelle = (analogRead(BROCHE_VOLUME)) / 10;
+  static int VolumePrecedent = VolumeActuelle; // = VolumeActuelle;
   bool VolumeChange = VolumeActuelle > (VolumePrecedent + 1) ||
                       VolumeActuelle < (VolumePrecedent - 1);
-  
+
   static int ModePrecedent = 0;
   static int num = 0;
   static bool BoutonONS = false;
-  
+
   // Verif si le volume a changer
   if (VolumeChange) {
     if (ModeLCD != MODE_VOLUME) {
       ModePrecedent = ModeLCD;
     }
-    
-   MillisVolumePrecedent = millis();
-   ModeLCD = MODE_VOLUME;
+
+    MillisVolumePrecedent = millis();
+    ModeLCD = MODE_VOLUME;
   }
 
   if (ModeLCD == MODE_SELECTION) {
@@ -109,7 +121,7 @@ void ControleLCD(listeLecture listeChansonArtiste[], int vol) {
     }
 
     if (LireBoutonNavigation() == BOUTON_PRECEDENT && BoutonONS == false &&
-        num != 0) {
+        num > 0) {
       BoutonONS = true;
       EffacerEcran();
       num--;
@@ -133,7 +145,13 @@ void ControleLCD(listeLecture listeChansonArtiste[], int vol) {
 
     if (LireBoutonNavigation() == AUCUN_BOUTON) {
       BoutonONS = false;
-      AfficherMusique(listeChansonArtiste, num);
+      AfficherMusique(listeChansonArtiste, num, ETAT_PLAYING);
+    }
+
+    if (LireBoutonNavigation() == BOUTON_PRECEDENT) {
+      BoutonONS = false;
+      ModeLCD = MODE_PAUSE;
+      EffacerEcran();
     }
 
     if (LireBoutonNavigation() == BOUTON_SELECTION && BoutonONS == false) {
@@ -143,29 +161,63 @@ void ControleLCD(listeLecture listeChansonArtiste[], int vol) {
     }
   }
 
+  if (ModeLCD == MODE_PAUSE) {
+
+    if (LireBoutonNavigation() == AUCUN_BOUTON) {
+      BoutonONS = false;
+      AfficherMusique(listeChansonArtiste, num, ETAT_PAUSE);
+    }
+
+    if (LireBoutonNavigation() == BOUTON_SUIVANT && BoutonONS == false) {
+      BoutonONS = true;
+      MillisPlayPrecedent = millis();
+      ModeLCD = MODE_PLAY;
+      EffacerEcran();
+    }
+
+    if (LireBoutonNavigation() == BOUTON_SELECTION && BoutonONS == false) {
+      BoutonONS = true;
+      ModeLCD = MODE_SELECTION;
+      EffacerEcran();
+    }
+  }
+
+  if (ModeLCD == MODE_PLAY) {
+
+    unsigned long MillisPlayActuel = millis();
+
+    if (MillisPlayActuel - MillisPlayPrecedent < DUREE_AFFICHAGE_PLAY) {
+
+      AfficherMusique(listeChansonArtiste, num, ETAT_PLAY);
+
+    } else {
+      ModeLCD = MODE_AFFICHAGE;
+      EffacerEcran();
+    }
+  }
+
   if (ModeLCD == MODE_VOLUME) {
 
     unsigned long MillisVolumeActuel = millis();
 
     if (MillisVolumeActuel - MillisVolumePrecedent < DUREE_AFFICHAGE_VOLUME) {
-      
+
       if (VolumeChange) {
-        AfficherVolume(vol);
-    }
-      
+        AfficherVolume(VolumeActuelle);
+      }
+
     } else {
       ModeLCD = ModePrecedent;
+      EffacerEcran();
     }
   }
 
-  
   if (VolumeChange) {
     VolumePrecedent = VolumeActuelle;
   }
   /* Serial.println(vol);
   Serial.println(ModePrecedent); */
 }
-
 
 void AfficherSelection(listeLecture listeChansonArtiste[], int num) {
 
@@ -238,7 +290,7 @@ void AfficherSelection(listeLecture listeChansonArtiste[], int num) {
   }
 }
 
-void AfficherMusique(listeLecture listeChansonArtiste[], int num) {
+void AfficherMusique(listeLecture listeChansonArtiste[], int num, int etat) {
 
   String l2 = " " + listeChansonArtiste[num].chanson;
   int len2 = l2.length();
@@ -247,12 +299,22 @@ void AfficherMusique(listeLecture listeChansonArtiste[], int num) {
 
   // --- ÉTAT 0 : PAUSE INITIALE DE 2 SECONDES ---
   if (etatDefilement == 0) {
+
     lcd.setCursor(0, 0);
-    lcd.print("Now playing ");
-    lcd.write(byte(0));
-    lcd.write(byte(1));
-    lcd.write(byte(0));
-    lcd.write(":");
+    if (etat == ETAT_PLAYING) {
+      lcd.print("Now playing ");
+      lcd.write(byte(0));
+      lcd.write(byte(1));
+      lcd.write(byte(0));
+      lcd.write(":");
+
+    } else if (etat == ETAT_PAUSE) {
+      lcd.print("Pause ");
+      lcd.write(byte(4));
+    } else if (etat == ETAT_PLAY) {
+      lcd.print("Play ");
+      lcd.write(byte(5));
+    }
 
     lcd.setCursor(0, 1);
     lcd.print(l2.substring(0, 16));
@@ -306,8 +368,8 @@ void AfficherVolume(int pourcentage) {
   EffacerEcran();
 
   int Volume032 = (32.0 / 100.0) * pourcentage;
-  //int Volume016 = Volume032/2;
-  // int Volume016 = FVolume016;
+  // int Volume016 = Volume032/2;
+  //  int Volume016 = FVolume016;
   String l1 = "Volume: "; //+ pourcentage;
 
   lcd.setCursor(0, 0);
@@ -315,14 +377,13 @@ void AfficherVolume(int pourcentage) {
   lcd.print(pourcentage);
   lcd.write("%");
 
-
   lcd.setCursor(0, 1);
   // lcd.print(Volume016);
 
-  for (int i = 0; i < (Volume032/2); i++) {
+  for (int i = 0; i < (Volume032 / 2); i++) {
     lcd.write(byte(2));
   }
-  if (Volume032 % 2 == 1){
+  if (Volume032 % 2 == 1) {
     lcd.write(byte(3));
   }
 }
@@ -341,7 +402,13 @@ BoutonNavigation LireBoutonNavigation() {
     return BOUTON_SELECTION;
   }
 
+  if (digitalRead(BROCHE_BOUTON_PAUSE) == LOW) {
+    return BOUTON_PAUSE;
+  }
+
+  if (digitalRead(BROCHE_BOUTON_PLAY) == LOW) {
+    return BOUTON_PLAY;
+  }
+
   return AUCUN_BOUTON;
 }
-
-

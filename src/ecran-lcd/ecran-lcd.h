@@ -45,31 +45,41 @@ const uint8_t LIGNE_MUSIQUE = 1;
 const uint8_t LIGNE_VOLUME = 2;
 const uint8_t LIGNE_BOUTON = 3;
 
+// Durée des diffirent timer
 const unsigned long DUREE_AFFICHAGE_DEBUT = 2000;
 const unsigned long DUREE_AFFICHAGE_DEFILEMENT = 700;
 const unsigned long DUREE_AFFICHAGE_FIN = 2000;
 const unsigned long DUREE_AFFICHAGE_VOLUME = 2000;
+const unsigned long DUREE_AFFICHAGE_PLAY = 2000;
 
 // Boutons de navigation (à confirmer)
 const int BROCHE_BOUTON_PRECEDENT = 30;
 const int BROCHE_BOUTON_SUIVANT = 31;
+const int BROCHE_BOUTON_PAUSE = 30;
+const int BROCHE_BOUTON_PLAY = 31;
 const int BROCHE_BOUTON_SELECTION = 32;
 
-const int BROCHE_BOUTON_VOLUME_MOINS = 41;
-const int BROCHE_BOUTON_VOLUME_PLUS = 42;
+const int BROCHE_VOLUME = A7;
 
-//Définition des mode du lcd
+
+//Définition des mode du LCD
 const int MODE_SELECTION = 0;
 const int MODE_AFFICHAGE = 1;
 const int MODE_VOLUME = 2;
+const int MODE_PAUSE =3;
+const int MODE_PLAY = 4;
+
+const int ETAT_PLAYING = 0;
+const int ETAT_PAUSE = 1;
+const int ETAT_PLAY = 2;
 
 enum BoutonNavigation : uint8_t {
   AUCUN_BOUTON,
   BOUTON_PRECEDENT,
   BOUTON_SUIVANT,
   BOUTON_SELECTION,
-  BOUTON_VOLUME_MOINS,
-  BOUTON_VOLUME_PLUS
+  BOUTON_PAUSE,
+  BOUTON_PLAY
 };
 
 extern Bouton boutonPrecedent;
@@ -91,7 +101,7 @@ void EffacerEcran();
  */
 void AfficherLigne(uint8_t ligne, const char *texte);
 
-void ControleLCD(listeLecture listeChansonArtiste[], int vol);
+void ControleLCD(listeLecture listeChansonArtiste[]);
 
 /**
  * @brief Met le LCD en mode Afficher la selection.
@@ -105,7 +115,7 @@ void AfficherSelection(listeLecture liste_chanson_artiste[], int num);
  * @param liste_chanson_artiste Liste des chanson et des artistes
  * @param num Nuémero de la chanson selectionné
  */
-void AfficherMusique(listeLecture liste_chanson_artiste[], int num);
+void AfficherMusique(listeLecture liste_chanson_artiste[], int num, int etat);
 
 /**
  * @brief Affiche le volume (E6).

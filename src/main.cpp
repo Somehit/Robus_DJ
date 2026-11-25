@@ -47,8 +47,8 @@ listeLecture liste_chanson_artiste[64] = {
     bool BoutonONS=false;
 
 void loop() {
-  vol = (analogRead(A7))/10;
-  ControleLCD(liste_chanson_artiste, vol);
+//  vol = (analogRead(A7))/10;
+  ControleLCD(liste_chanson_artiste);
 /*
     if (LireBoutonNavigation() == AUCUN_BOUTON) {
       BoutonONS = false;
