@@ -215,8 +215,6 @@ void ControleLCD(listeLecture listeChansonArtiste[]) {
   if (VolumeChange) {
     VolumePrecedent = VolumeActuelle;
   }
-  /* Serial.println(vol);
-  Serial.println(ModePrecedent); */
 }
 
 void AfficherSelection(listeLecture listeChansonArtiste[], int num) {
