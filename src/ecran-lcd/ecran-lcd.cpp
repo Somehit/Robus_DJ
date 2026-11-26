@@ -148,8 +148,8 @@ void ControleLCD(listeLecture listeChansonArtiste[]) {
       AfficherMusique(listeChansonArtiste, num, ETAT_PLAYING);
     }
 
-    if (LireBoutonNavigation() == BOUTON_PRECEDENT) {
-      BoutonONS = false;
+    if (LireBoutonNavigation() == BOUTON_PRECEDENT && BoutonONS == false) {
+      BoutonONS = true;
       ModeLCD = MODE_PAUSE;
       EffacerEcran();
     }
@@ -168,7 +168,7 @@ void ControleLCD(listeLecture listeChansonArtiste[]) {
       AfficherMusique(listeChansonArtiste, num, ETAT_PAUSE);
     }
 
-    if (LireBoutonNavigation() == BOUTON_SUIVANT && BoutonONS == false) {
+    if (LireBoutonNavigation() == BOUTON_PRECEDENT && BoutonONS == false) {
       BoutonONS = true;
       MillisPlayPrecedent = millis();
       ModeLCD = MODE_PLAY;

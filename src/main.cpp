@@ -33,6 +33,10 @@ void setup() {
 }
 
 
+
+
+
+
 listeLecture liste_chanson_artiste[64] = {
     {"Ca m'enerve", "Helmut Fritz"},
     {"The bad touch", "Bloodhound Gang"},
@@ -42,7 +46,7 @@ listeLecture liste_chanson_artiste[64] = {
     {"Mélanine", "Heuss l'Enfoiré"},
     {"Get Lucky", "Daft Punk"},
     {"California Gurls", "Katy Perry"},
-    {"Light Years (feat. Inéz)", "John Summit"},
+    {"Light Years (feat. Inez)", "John Summit"},
     {"Into the Groove", "Madonna"},
     {"Easy Lover", "Philip Bailey & Phil Collins"},
     {"Mentir", "Marie-Mai"},
@@ -59,12 +63,12 @@ listeLecture liste_chanson_artiste[64] = {
     {"It's the Most Wonderful Time of the Year", "jschlatt"},
     {"Let's Do It Again", "AngryBaby"},
     {"Alors on danse", "Stromae"},
-    {"Crazy in Love (feat. Jay-Z)", "Beyoncé"},
+    {"Crazy in Love (feat. Jay-Z)", "Beyonce"},
     {"Watermelon Sugar", "Harry Styles"},
     {"Deux frères", "PNL"},
     {"Zipette", "Ninho"},
-    {"Les Champs-Élysées", "Joe Dassin"},
-    {"Cette année-là", "Claude François"}
+    {"Les Champs-Elysees", "Joe Dassin"},
+    {"Cette annee-la", "Claude François"}
 
   };
 
