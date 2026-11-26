@@ -21,3 +21,18 @@ bool microActif = true;
 unsigned long dernierClap = 0;
 
 // TODO : écrire ici les fonctions déclarées dans microphone.h
+
+
+const int microphone = A3
+
+void setup() {
+    Serial.begin(9600);
+}
+
+void loop (){
+    int valeur = analogRead(microphone)
+
+    Serial.println(valeur);
+
+    delay(10);
+}
