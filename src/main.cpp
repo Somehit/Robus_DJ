@@ -35,16 +35,38 @@ void setup() {
 
 listeLecture liste_chanson_artiste[64] = {
     {"Ca m'enerve", "Helmut Fritz"},
-    {"C'est beau la bourgeoisie", "Discobitch"},
     {"The bad touch", "Bloodhound Gang"},
-    {"Heart Attack", "Demi Lovato"},
-    {"Can't Hold Us", "Macklemore & Ryan Lewis"},
-    {"S&M", "Rihanna"},
-    {"S&M", "Rihanna"}};
+    {"Lush Life", "Zara Larsson"},
+    {"Turn Down for What", "DJ Snake & Lil Jon"},
+    {"I Was Made for Lovin' You", "Kiss "},
+    {"Mélanine", "Heuss l'Enfoiré"},
+    {"Get Lucky", "Daft Punk"},
+    {"California Gurls", "Katy Perry"},
+    {"Light Years (feat. Inéz)", "John Summit"},
+    {"Into the Groove", "Madonna"},
+    {"Easy Lover", "Philip Bailey & Phil Collins"},
+    {"Mentir", "Marie-Mai"},
+    {"Under the Bridge", "Red Hot Chili Peppers"},
+    {"Shut Up and Drive", "Rihanna"},
+    {"Whenever, Wherever", "Shakira"},
+    {"I Gotta Feeling", "Black Eyed Peas"},
+    {"No Batidão", "ZXKAI & slxughter"},
+    {"One More Time", "Daft Punk"},
+    {"Passo Bem Solto (Slowed)", "ATLXS"},
+    {"Free Bird", "Lynyrd Skynyrd"},
+    {"I Will Survive", "Gloria Gaynor"},
+    {"Immortals", "Fall Out Boy"},
+    {"It's the Most Wonderful Time of the Year", "jschlatt"},
+    {"Let's Do It Again", "AngryBaby"},
+    {"Alors on danse", "Stromae"},
+    {"Crazy in Love (feat. Jay-Z)", "Beyoncé"},
+    {"Watermelon Sugar", "Harry Styles"},
+    {"Deux frères", "PNL"},
+    {"Zipette", "Ninho"},
+    {"Les Champs-Élysées", "Joe Dassin"},
+    {"Cette année-là", "Claude François"}
 
-    int test =1;
-    int vol;
-    bool BoutonONS=false;
+  };
 
 void loop() {
 //  vol = (analogRead(A7))/10;

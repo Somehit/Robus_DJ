@@ -26,22 +26,22 @@ unsigned long debutAffichageBouton = 0;*/
 
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
-byte musicnote_up[] = {B00000, B01111, B01001, B01001,
+byte CharMusicNoteUp[] = {B00000, B01111, B01001, B01001,
                        B11011, B11011, B00000, B00000};
 
-byte musicnote_dw[] = {B00000, B00000, B01111, B01001,
+byte CharMusicNotDw[] = {B00000, B00000, B01111, B01001,
                        B01001, B11011, B11011, B00000};
 
-byte CaseVolumeFull[] = {B11111, B11111, B11111, B11111,
+byte CharVolumeFull[] = {B11111, B11111, B11111, B11111,
                          B11111, B11111, B11111, B11111};
 
-byte CaseVolumeHalf[] = {B00000, B00000, B00000, B00000,
+byte CharVolumeHalf[] = {B00000, B00000, B00000, B00000,
                          B11111, B11111, B11111, B11111};
 
-byte pausechar[] = {B00000, B00000, B01010, B01010,
+byte CharPause[] = {B00000, B00000, B01010, B01010,
                     B01010, B01010, B01010, B00000};
 
-byte playchar[] = {B00000, B00000, B01000, B01100,
+byte CharPlay[] = {B00000, B00000, B01000, B01100,
                    B01110, B01100, B01000, B00000};
 
 unsigned long precedentMillis = 0; // Pour gérer le temps sans bloquer
@@ -66,12 +66,12 @@ void EcranInit() {
   lcd.begin(16, 2);
   lcd.clear();
 
-  lcd.createChar(0, musicnote_up);
-  lcd.createChar(1, musicnote_dw);
-  lcd.createChar(2, CaseVolumeFull);
-  lcd.createChar(3, CaseVolumeHalf);
-  lcd.createChar(4, pausechar);
-  lcd.createChar(5, playchar);
+  lcd.createChar(0, CharMusicNoteUp);
+  lcd.createChar(1, CharMusicNotDw);
+  lcd.createChar(2, CharVolumeFull);
+  lcd.createChar(3, CharVolumeHalf);
+  lcd.createChar(4, CharPause);
+  lcd.createChar(5, CharPlay);
 
   etatDefilement = 0;
   indexDefilement = 0;
