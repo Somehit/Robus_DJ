@@ -21,11 +21,11 @@
 #define ECRAN_LCD_H
 
 #include <Arduino.h>
-#include <LiquidCrystal.h> //sur le esp????????
+#include <LiquidCrystal.h>
 #include <config.h>
 #include <librobus.h>
 
-const uint8_t NB_CHANSON_MAX = 64;
+const uint8_t NB_CHANSON_MAX = 32;
 
 struct listeLecture {
   String chanson;
@@ -68,6 +68,7 @@ const int MODE_AFFICHAGE = 1;
 const int MODE_VOLUME = 2;
 const int MODE_PAUSE =3;
 const int MODE_PLAY = 4;
+const int MODE_AFFICHAGE_TEMPO = 5;
 
 const int ETAT_PLAYING = 0;
 const int ETAT_PAUSE = 1;
